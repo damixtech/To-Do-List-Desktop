@@ -10,8 +10,10 @@ class App():
         self.window.title('To-do')
         self.window.geometry('450x500')
         self.window.minsize(400,600)
-        self.lista_tareas = []
-        self.var = BooleanVar() 
+
+        #PROBANDO NUEVO MÉTODO
+        self.vars_control = {}
+        
         #Llamar a la función que crea los widgets
         self.create_widgets()
         
@@ -37,7 +39,8 @@ class App():
         #Frame para lista de tareas
         self.frame_lista_tareas = Frame(self.window, height=100)
         self.frame_lista_tareas.pack()
-        self.label_width = Label(self.frame_lista_tareas, text="", width=50)
+        ##Label vacía para dar anchura al frame de la lista de tareas
+        self.label_width = Label(self.frame_lista_tareas, width=50)
         self.label_width.pack()   
 
         #Frame para botones inferiores
@@ -58,7 +61,8 @@ class App():
 
     #Añadir tarea
     def añadir_tarea(self):
-        self.nombre_tarea = self.entrada.get(1.0, '1.end') #Desde la línea 1 hasta el final de la línea 1
+        #Desde la línea 1 hasta el final de la línea 1
+        self.nombre_tarea = self.entrada.get(1.0, '1.end') 
         #Comprueba si hay algo escrito para mostrarlo
         if len(self.nombre_tarea) != 0:
             self.entrada.delete(1.0, 'end')
@@ -67,47 +71,63 @@ class App():
 
     #Mostrar tareas
     def mostrar_tarea(self):
-        '''Crea un nuevo widget (Checkbutton) con el texto de la entrada y lo añade a la lista'''
+        '''Crea un nuevo widget (Checkbutton) con el texto de la entrada
+        y lo añade a la lista'''
+        self.var = BooleanVar()
+        var_value = self.var.get()
+        self.vars_control[self.nombre_tarea] = var_value
         self.tarea = Checkbutton(self.frame_lista_tareas,
                             text=self.nombre_tarea,
-                            variable="",
+                            variable=self.var,
                             font=('Roboto', 16),
-                            highlightthickness=0)
+                            highlightthickness=0,
+                            )
         self.tarea.pack(anchor="w")
-        #Genera el evento para marcar la tarea como completada
+        #Genera un evento al marcar o desmarcar un checkbutton con el botón
+        #izquierdo del ratón
         self.tarea.bind("<Button-1>", self.on_click)
 
 
     #Marcar o desmarcar tarea completada
     def on_click(self, event):
-        #Si el estado del widget es 'active' o 'normal'
-        if event.widget.cget('state') in ['active', 'normal']:
-            self.var.set(True)
-            #Desabilita el checkbuton pulsado y cambia el estilo para indicar que la tarea está completada
-            event.widget.config(text=event.widget.cget('text'), variable=self.var,
-                                font=('Roboto', 16, 'overstrike'), state='disabled')
-            
-        #Si el estado del widget es otro ('disabled')
+        #Extrae el nombre de la tarea (Clave en el diccionario de variables)
+        tarea = event.widget.cget('text')
+        #Extrae el valor de la variable de control almacenada en el dict
+        #vars_contorl con la clave [tarea]
+        var = self.vars_control[tarea] #Valor (True o False)
+        
+        #Cambiar valores de las variables
+        if var == False:
+            self.vars_control[tarea] = True
         else:
-            self.var.set(False)
-            event.widget.config(text=event.widget.cget('text'), variable=self.var,
-                                font=('Roboto', 16),
-                                state='normal')
-
+            self.vars_control[tarea] = False
+        
+        #Si el valor de la variable es True
+        if self.vars_control[tarea] == True:
+            #Cambia el estilo para indicar que la tarea está completada
+            event.widget.config(font=('Roboto',16, 'overstrike'))
+        #Si el valor de la variable es False
+        else:
+            #Vuelve a poner la fuente como al inicio, sin 'overstrike'
+            event.widget.config(font=('Roboto', 16))
+            
 
     def limpiar_tareas(self): 
+        '''Comprueba las tareas que están marcadas y las elimina'''
         for widget in self.frame_lista_tareas.winfo_children():
-            if widget.cget('state') == 'disabled':
-                widget.destroy()
-    
+            tipo = widget.winfo_class()
+            if tipo == 'Checkbutton':
+                tarea = widget.cget('text')
+                if self.vars_control[tarea] == True:
+                    widget.destroy()
+
 
     def borrar_tareas(self):
+        '''Elimina todas las tareas, estén o no marcadas'''
         for widget in self.frame_lista_tareas.winfo_children():
-            widget.destroy()
-        #Crear el widget Label (vacío) que mantiene el ancho del frame para la lista de tareas
-        self.label_width = Label(self.frame_lista_tareas, text="", width=50)
-        self.label_width.pack() 
-
+            tipo = widget.winfo_class()
+            if tipo == 'Checkbutton':
+                widget.destroy()
         
 
 app = App(Tk())
