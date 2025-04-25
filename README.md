@@ -18,7 +18,7 @@ A simple and functional desktop app to manage your daily tasks, built with **Pyt
 
 <p align="center">
   <img src="./images/screenshot1.png" alt="Screenshot 1" width="30%" />
-  <img src="./images/screenshot3.png" alt="Screenshot 2" width="30%" />
+  <img src="./images/screenshot2.png" alt="Screenshot 2" width="30%" />
   <img src="./images/screenshot3.png" alt="Screenshot 3" width="30%" />
 </p>
 
