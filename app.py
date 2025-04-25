@@ -37,7 +37,7 @@ class App():
         self.boton_crear.pack(side='left')
         
         #Frame para lista de tareas
-        self.frame_lista_tareas = Frame(self.window, height=100)
+        self.frame_lista_tareas = Frame(self.window)
         self.frame_lista_tareas.pack()
         ##Label vacía para dar anchura al frame de la lista de tareas
         self.label_width = Label(self.frame_lista_tareas, width=50)
@@ -73,6 +73,7 @@ class App():
     def mostrar_tarea(self):
         '''Crea un nuevo widget (Checkbutton) con el texto de la entrada
         y lo añade a la lista'''
+
         self.var = BooleanVar()
         var_value = self.var.get()
         self.vars_control[self.nombre_tarea] = var_value
