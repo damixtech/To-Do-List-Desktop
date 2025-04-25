@@ -10,8 +10,7 @@ class App():
         self.window.title('To-do')
         self.window.geometry('450x500')
         self.window.minsize(400,600)
-
-        #PROBANDO NUEVO MÉTODO
+        #Dict for saving control vars values
         self.vars_control = {}
         
         #Llamar a la función que crea los widgets
